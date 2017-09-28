@@ -12,19 +12,13 @@ var turn = 0;
 document.onreadystatechange = function() {
 	if ( document.readyState === 'interactive' ) {
 		restartButton.onclick = startGame;
-
-
 		startGame();
 	}
 };
 
-
-
-
 function startGame() {
 	console.log( 'startGame' );
 
-	
 	// Reset turn counter
 	turn = 0;
 
@@ -39,16 +33,38 @@ function startGame() {
 	}
 }
 
-
-
-
 function takeSpace( e ) {
-	console.log( 'takeSpace ', e );
-	console.log( this ); 
-
+	console.log( 'takeSpace ' );
+	
 	turn++;
-	this.innerHTML = symbols[ turn % 2 ];
+	var currentPlayer = symbols[ turn % 2 ];
+	this.innerHTML = currentPlayer;
 	this.removeEventListener( 'click', takeSpace );
 
+	for ( var i = 0; i < wins.length; i++ ) {
+		if ( checkForWin( wins[ i ] ) ) {
+			for ( var j = 0; j < spaces.length; j++ ) {
+				spaces[ j ].removeEventListener( 'click', takeSpace );
+			}
 
+			winnerMessage.innerHTML = currentPlayer + ' has won!';
+			notifications.style.display = 'block';
+		}
+		else {
+			if ( turn === 9 ) {
+				winnerMessage.innerHTML = 'No one has won, please play again.';
+				notifications.style.display = 'block';
+			}
+		}
+	}
+}
+
+function checkForWin( winArray ) {
+	console.log( 'checkForWin ' );
+
+	return (
+		spaces[ winArray[ 0 ] ].innerHTML !== '' &&
+		spaces[ winArray[ 0 ] ].innerHTML === spaces[ winArray[ 1 ] ].innerHTML && 
+		spaces[ winArray[ 1 ] ].innerHTML === spaces[ winArray[ 2 ] ].innerHTML
+	);
 }
